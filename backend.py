@@ -13,6 +13,11 @@ import warnings
 warnings.filterwarnings("ignore", message=".*TqdmWarning.*")
 
 
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+
 
 # Carga las variables de entorno desde el archivo .env
 load_dotenv()
@@ -34,12 +39,244 @@ class AgentState(TypedDict):
 conn = sqlite3.connect("checkpoints.db", check_same_thread=False)
 memory = SqliteSaver(conn)
 
+
 # Inicializa el modelo de lenguaje
 model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0
 )
 
+
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="models/gemini-embedding-001",
+    google_api_key=GEMINI_API_KEY
+)
+
+
+# funciones
+
+
+def cargar_pdf_envios():
+
+    loader = PyPDFLoader(
+        "data/pdfs/Guias de Tiempos y Costos de Envío de BimBay Buy.pdf"
+    )
+
+    documentos = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+
+    chunks = splitter.split_documents(documentos)
+
+    return chunks
+
+
+
+def cargar_pdf_garantias():
+
+    loader = PyPDFLoader(
+        "data/pdfs/Manual de Garantía de Productos de BimBam Buy.pdf"
+    )
+
+    documentos = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+
+    chunks = splitter.split_documents(documentos)
+
+    return chunks
+
+
+
+def cargar_pdf_devoluciones():
+
+    loader = PyPDFLoader(
+        "data/pdfs/Políticas de Reembolsos y Devoluciones de BimBAm Buy.pdf"
+    )
+
+    documentos = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+
+    chunks = splitter.split_documents(documentos)
+
+    return chunks        
+
+
+
+def cargar_pdf_pagos():
+
+    loader = PyPDFLoader(
+        "data/pdfs/Preguntas Frecuentes sobre Métodos de Pago de BimBam Buy.pdf"
+    )
+
+    documentos = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+
+    chunks = splitter.split_documents(documentos)
+
+    return chunks
+
+
+def cargar_pdf_afiliados():
+
+    loader = PyPDFLoader(
+        "data/pdfs/Programa de Afiliados de BimBam Buy.pdf"
+    )
+
+    documentos = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+
+    chunks = splitter.split_documents(documentos)
+
+    return chunks    
+
+
+
+# Indices
+
+
+chunks_envios = cargar_pdf_envios()
+
+if os.path.exists("faiss_envios"):
+
+    vector_envios = FAISS.load_local(
+        "faiss_envios",
+        embeddings,
+        allow_dangerous_deserialization=True
+    )
+
+    print("FAISS de envíos cargado correctamente")
+
+else:
+
+    vector_envios = FAISS.from_documents(
+        chunks_envios,
+        embeddings
+    )
+
+    vector_envios.save_local("faiss_envios")
+
+    print("FAISS de envíos creado correctamente")
+
+
+
+chunks_garantias = cargar_pdf_garantias()
+
+if os.path.exists("faiss_garantias"):
+
+    vector_garantias = FAISS.load_local(
+        "faiss_garantias",
+        embeddings,
+        allow_dangerous_deserialization=True
+    )
+
+    print("FAISS de garantías cargado correctamente")
+
+else:
+
+    vector_garantias = FAISS.from_documents(
+        chunks_garantias,
+        embeddings
+    )
+
+    vector_garantias.save_local("faiss_garantias")
+
+    print("FAISS de garantías creado correctamente")
+
+
+
+chunks_devoluciones = cargar_pdf_devoluciones()
+
+if os.path.exists("faiss_devoluciones"):
+
+    vector_devoluciones = FAISS.load_local(
+        "faiss_devoluciones",
+        embeddings,
+        allow_dangerous_deserialization=True
+    )
+
+    print("FAISS de devoluciones cargado correctamente")
+
+else:
+
+    vector_devoluciones = FAISS.from_documents(
+        chunks_devoluciones,
+        embeddings
+    )
+
+    vector_devoluciones.save_local("faiss_devoluciones")
+
+    print("FAISS de devoluciones creado correctamente")
+
+
+
+chunks_pagos = cargar_pdf_pagos()
+
+if os.path.exists("faiss_pagos"):
+
+    vector_pagos = FAISS.load_local(
+        "faiss_pagos",
+        embeddings,
+        allow_dangerous_deserialization=True
+    )
+
+    print("FAISS de pagos cargado correctamente")
+
+else:
+
+    vector_pagos = FAISS.from_documents(
+        chunks_pagos,
+        embeddings
+    )
+
+    vector_pagos.save_local("faiss_pagos")
+
+    print("FAISS de pagos creado correctamente")
+
+
+
+chunks_afiliados = cargar_pdf_afiliados() 
+
+if os.path.exists("faiss_afiliados"): 
+
+    vector_afiliados = FAISS.load_local(
+         "faiss_afiliados",
+         embeddings, 
+         allow_dangerous_deserialization=True 
+    ) 
+    
+    print("FAISS de afiliados cargado correctamente") 
+    
+else: 
+
+    vector_afiliados = FAISS.from_documents( 
+        chunks_afiliados,
+        embeddings 
+    ) 
+    
+    vector_afiliados.save_local("faiss_afiliados") 
+    
+    print("FAISS de afiliados creado correctamente")
+
+      
 
 
 # Prompts
@@ -126,73 +363,137 @@ def nodo_orquestador(state: AgentState):
 
 def nodo_agente_envios(state: AgentState):
 
+    documentos = vector_envios.similarity_search(
+        state["user_question"],
+        k=3
+    )
+
+    contexto = "\n\n".join(
+        documento.page_content
+        for documento in documentos
+    )
+
     response = model.invoke(
         prompt_agente_envios
-        + f"\nConsulta del usuario: {state['user_question']}"
+        + "\n\nUsa esta información del documento:\n"
+        + contexto
+        + f"\n\nConsulta del usuario: {state['user_question']}"
     )
 
     return {
         "response": response.content,
         "messages": state["messages"] + [
-            "Respondió agente envíos"
+            "Respondió agente envíos usando PDF"
         ]
     }
+
 
 def nodo_agente_garantias(state: AgentState):
 
+    documentos = vector_garantias.similarity_search(
+        state["user_question"],
+        k=3
+    )
+
+    contexto = "\n\n".join(
+        documento.page_content
+        for documento in documentos
+    )
+
     response = model.invoke(
         prompt_agente_garantias
-        + f"\nConsulta del usuario: {state['user_question']}"
+        + "\n\nInformación del documento:\n"
+        + contexto
+        + f"\n\nConsulta del usuario: {state['user_question']}"
     )
 
     return {
         "response": response.content,
         "messages": state["messages"] + [
-            "Respondió agente garantías"
+            "Respondió agente garantías usando PDF"
         ]
     }
+
+
 
 def nodo_agente_devoluciones(state: AgentState):
 
+    documentos = vector_devoluciones.similarity_search(
+        state["user_question"],
+        k=3
+    )
+
+    contexto = "\n\n".join(
+        documento.page_content
+        for documento in documentos
+    )
+
     response = model.invoke(
         prompt_agente_devoluciones
-        + f"\nConsulta del usuario: {state['user_question']}"
+        + "\n\nInformación del documento:\n"
+        + contexto
+        + f"\n\nConsulta del usuario: {state['user_question']}"
     )
 
     return {
         "response": response.content,
         "messages": state["messages"] + [
-            "Respondió agente devoluciones"
+            "Respondió agente devoluciones usando PDF"
         ]
     }
+
 
 
 def nodo_agente_pagos(state: AgentState):
 
+    documentos = vector_pagos.similarity_search(
+        state["user_question"],
+        k=3
+    )
+
+    contexto = "\n\n".join(
+        documento.page_content
+        for documento in documentos
+    )
+
     response = model.invoke(
         prompt_agente_pagos
-        + f"\nConsulta del usuario: {state['user_question']}"
+        + "\n\nInformación del documento:\n"
+        + contexto
+        + f"\n\nConsulta del usuario: {state['user_question']}"
     )
 
     return {
         "response": response.content,
         "messages": state["messages"] + [
-            "Respondió agente pagos"
+            "Respondió agente pagos usando PDF"
         ]
     }
 
 
 def nodo_agente_afiliados(state: AgentState):
 
+    documentos = vector_afiliados.similarity_search(
+        state["user_question"],
+        k=3
+    )
+
+    contexto = "\n\n".join(
+        documento.page_content
+        for documento in documentos
+    )
+
     response = model.invoke(
         prompt_agente_afiliados
-        + f"\nConsulta del usuario: {state['user_question']}"
+        + "\n\nInformación del documento:\n"
+        + contexto
+        + f"\n\nConsulta del usuario: {state['user_question']}"
     )
 
     return {
         "response": response.content,
         "messages": state["messages"] + [
-            "Respondió agente afiliados"
+            "Respondió agente afiliados usando PDF"
         ]
     }
 

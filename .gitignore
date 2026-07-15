@@ -12,4 +12,6 @@ __pycache__/
 # Archivos temporales de Jupyter
 .ipynb_checkpoints/
 
-
+checkpoints.db
+checkpoints.db-shm
+checkpoints.db-wal
