@@ -18,12 +18,25 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 
+import streamlit as st
 
-# Carga las variables de entorno desde el archivo .env
-load_dotenv()
+
+# Carga las variables de entorno desde el archivo .env, si no utilizamos Streamlit, se ejecutaria ésto.
+#load_dotenv()
 
 # Define las variables de entorno
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+#GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+
+
+# Como utilizamos Streamlit usamos esto:
+load_dotenv()
+
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
 
 
 # Define el estado del agente (AgentState)
