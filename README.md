@@ -125,7 +125,7 @@ Especializado en:
 
 ---
 
-# 📚 Base documental (RAG)
+## 📚 Base documental (RAG)
 
 El asistente consulta cinco documentos independientes:
 
@@ -144,7 +144,7 @@ Cada documento fue procesado mediante:
 
 ---
 
-# 🧠 Funcionamiento
+## 🧠 Funcionamiento
 
 1. El usuario realiza una consulta.
 2. El Agente Orquestador identifica el tema.
@@ -155,9 +155,9 @@ Cada documento fue procesado mediante:
 
 ---
 
-# 🖥️ Interfaz
+## 🖥️ Interfaz
 
-La aplicación utiliza **Gradio** para ofrecer una interfaz web simple e intuitiva.
+La aplicación fue desarrollada inicialmente con **Gradio** y se encuentra desplegada públicamente mediante **Streamlit Community Cloud**, ofreciendo una interfaz web simple e intuitiva.
 
 ---
 
@@ -171,7 +171,7 @@ La aplicación utiliza **Gradio** para ofrecer una interfaz web simple e intuiti
 
 ### Interfaz del asistente
 
-> ![Consulta de envíos](consulta-envios.png)
+![Consulta de envíos](consulta-envios.png)
 
 ![Consulta de garantías](consulta-garantias.png)
 
@@ -180,12 +180,6 @@ La aplicación utiliza **Gradio** para ofrecer una interfaz web simple e intuiti
 ![Consulta de devoluciones](consulta-devoluciones.png)
 
 ![Consulta de afiliados](consulta-afiliados.png)
-
----
-
-### ☁️ Proyecto desplegado
-
-> **📌 Agregar aquí la captura del proyecto ejecutándose en la nube (OCI).**
 
 ---
 
@@ -271,6 +265,24 @@ http://127.0.0.1:7860
 * ✅ Interfaz con Gradio
 * ✅ Persistencia mediante SQLite
 * ✅ Código modular
+
+---
+
+## 🚀 Aplicación desplegada
+
+La aplicación está disponible públicamente en Streamlit Community Cloud:
+
+**Demo online:**  
+
+https://ai-ecommerce-agent-bimbambuy.streamlit.app/
+
+---
+
+## 🎥 Video demostrativo
+
+Video de funcionamiento del asistente:
+
+https://drive.google.com/file/d/1aeiLPiKYeoswRU-SBcwODXi7ww17XyPQ/view?usp=sharing
 
 ---
 
