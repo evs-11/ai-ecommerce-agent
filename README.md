@@ -39,6 +39,7 @@ La combinación de **IA Generativa**, **RAG** y una arquitectura **Multiagente**
 * 📄 PyPDFLoader
 * ✂️ RecursiveCharacterTextSplitter
 * 💬 Gradio
+* 💻 Streamlit
 * 💾 SQLite (Checkpointer)
 * 🌐 Git & GitHub
 
@@ -157,7 +158,9 @@ Cada documento fue procesado mediante:
 
 ## 🖥️ Interfaz
 
-La aplicación fue desarrollada inicialmente con **Gradio** y se encuentra desplegada públicamente mediante **Streamlit Community Cloud**, ofreciendo una interfaz web simple e intuitiva.
+La aplicación cuenta con una interfaz web desarrollada con **Streamlit Community Cloud** para la demostración pública del asistente.
+
+Inicialmente se desarrolló una interfaz con **Gradio** para pruebas locales del sistema multiagente.
 
 ---
 
@@ -165,7 +168,7 @@ La aplicación fue desarrollada inicialmente con **Gradio** y se encuentra despl
 
 ### Diagrama del grafo
 
-> ![Diagrama del grafo](grafo.png)
+![Diagrama del grafo](grafo.png)
 
 ---
 
@@ -188,6 +191,7 @@ La aplicación fue desarrollada inicialmente con **Gradio** y se encuentra despl
 ```text
 .
 ├── app.py
+├── streamlit_app.py
 ├── backend.py
 ├── Multiagente.ipynb
 ├── requirements.txt
@@ -239,16 +243,18 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Ejecución
+## ▶️ Ejecución local
+
+Para ejecutar la aplicación con Streamlit:
 
 ```bash
-python app.py
+streamlit run streamlit_app.py
 ```
 
-La aplicación quedará disponible en:
+La aplicación estará disponible localmente en:
 
 ```text
-http://127.0.0.1:7860
+http://localhost:8501
 ```
 
 ---
@@ -262,7 +268,8 @@ http://127.0.0.1:7860
 * ✅ Índices FAISS persistentes
 * ✅ Recuperación de contexto
 * ✅ Google Gemini
-* ✅ Interfaz con Gradio
+* ✅ Interfaz web con Streamlit
+* ✅ Interfaz Gradio utilizada durante desarrollo
 * ✅ Persistencia mediante SQLite
 * ✅ Código modular
 
